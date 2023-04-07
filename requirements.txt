@@ -1,0 +1,14 @@
+aiortc
+av
+typing_extensions
+streamlit
+streamlit_webrtc
+firebase-admin
+opencv_python
+pillow
+PyJWT
+tensorflow
+numpy
+mediapipe
+git+https://github.com/openai/whisper.git
+streamlit-audiorecorder
