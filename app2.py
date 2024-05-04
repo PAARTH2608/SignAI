@@ -513,69 +513,75 @@ def audio_model():
 
 
 def speech_detection():
-    # Record audio
+    # app_sst()
     audio = audiorecorder(start_prompt="Start recording", stop_prompt="Stop recording", pause_prompt="", show_visualizer=True, key=None)
 
     if len(audio) > 0:
         # Convert AudioSegment object to WAV format
-        wav_data = BytesIO()
-        audio.export(wav_data, format="wav")
-        wav_data.seek(0)  # Go back to the beginning of the BytesIO object
+        wav_data = audio.raw_data
+        wav_file = BytesIO()
+        audio.export(wav_file, format="wav")
+        wav_data = wav_file.getvalue()
 
         # Display audio using Streamlit
         st.audio(wav_data, format="audio/wav", sample_rate=audio.frame_rate)
 
-        # Save the audio to a file
-        with open("audio_proc/audio.wav", "wb") as f:
-            f.write(wav_data.read())
+        # model = audio_model()
 
-        # Perform model inference
+        # if not audio.mp3 exists then create it
+        wav_file = open("audio_proc/audio.mp3", "wb")
+        wav_file.write(audio.tobytes())
+
+        # API_URL = "https://api-inference.huggingface.co/models/openai/whisper-small.en"
+        # headers = {
+        #     "Authorization": "Bearer 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"}
+
+        # def query(filename):
+        #     with open(filename, "rb") as f:
+        #         data = f.read()
+        #     response = requests.request(
+        #         "POST", API_URL, headers=headers, data=data)
+        #     return json.loads(response.content.decode("utf-8"))
+
+        # result = query("audio_proc/audio.mp3")
         model = whisper.load_model("base")
-        result = model.transcribe("audio_proc/audio.wav")
+        result = model.transcribe("audio_proc/audio.mp3")
 
-        # Display success message
         placeholder = st.empty()
-        placeholder.success("Model loaded successfully")
 
-        # Process the transcribed text
+        # while 'error' in result:
+        #     placeholder.error("Model is still loading, please wait...")
+        #     time.sleep(30)
+        #     result = query("audio_proc/audio.mp3")
+
+        placeholder.success("Model loaded successfully")
         text = result["text"]
         print("TEXT : ", text)
+        # result = model.transcribe("audio_proc/audio.mp3")
+        # text = result["text"]
 
-        # Create video based on the transcribed text
-        if text:
+        if text != '':
             original_text = text
-            first_word = original_text.split()[0].upper()
-            filename = f'video_proc/{first_word}.webm'
+            text = text.upper()
+            text = text.replace(' ', '')
 
-            # Check if the image file for the first letter exists
-            first_letter_image_path = f"static/sign_alpha/{first_word[0]}.jpg"
-            if not os.path.exists(first_letter_image_path):
-                st.error(f"Image file for the first letter '{first_word[0]}' not found.")
-                return  # Exit the function
-
-            frame = cv2.imread(first_letter_image_path)
-            if frame is None:
-                st.error("Failed to load image file.")
-                return  # Exit the function
-
-            height, width, _ = frame.shape
+            video_name = 'video_proc/{}.webm'.format(text)
+            print(text[0])
+            frame = cv2.imread("static/sign_alpha/"+text[0]+".jpg")
+            height, width, layers = frame.shape
             fourcc = cv2.VideoWriter_fourcc(*'VP90')
-            video = cv2.VideoWriter(filename, fourcc, 1, (width, height))
+            video = cv2.VideoWriter(video_name, fourcc, 1, (width, height))
 
             for i in text:
-                if i.isalpha():
-                    image_path = f"static/sign_alpha/{i}.jpg"
-                    if os.path.exists(image_path):
-                        video.write(cv2.imread(image_path))
-                    else:
-                        st.warning(f"Image file for letter '{i}' not found.")
+                if not i.isalpha():
+                    continue
+                video.write(cv2.imread("static/sign_alpha/"+i+".jpg"))
 
             cv2.destroyAllWindows()
             video.release()
             st.header(original_text)
-            st.video(filename)
+            st.video("video_proc/{}.webm".format(text))
 
-    # Remove temporary files
     files = glob.glob('video_proc/*')
     for f in files:
         os.remove(f)

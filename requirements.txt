@@ -12,3 +12,6 @@ numpy
 mediapipe
 git+https://github.com/openai/whisper.git
 streamlit-audiorecorder
+textblob
+wordcloud
+plotly-express
