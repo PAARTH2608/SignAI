@@ -452,7 +452,7 @@ def main():
     if st.session_state.key:
         user_id = st.session_state.key
 
-        db = firebase()
+        app, db = firebase()
         st.sidebar.title("Select the process to your convinience")
         st.sidebar.markdown("Select the conversion method accordingly:")
         algo = st.sidebar.selectbox(
@@ -483,6 +483,7 @@ def main():
                 st.experimental_rerun()
 
         elif algo == "Feedback analysis":
+            # analysis of feedback that is coming from the database, includes the feedback of all the users
             st.title("Feedback Analysis")
             st.set_option('deprecation.showPyplotGlobalUse', False)
 
