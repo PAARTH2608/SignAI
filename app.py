@@ -51,138 +51,6 @@ def cache_query_param():
             st.experimental_set_query_params(user=user_id)
             st.experimental_rerun()
 
-
-def extract_feature(video_stream):
-    mp_hands = mp.solutions.hands
-    mp_drawing = mp.solutions.drawing_utils
-
-    with mp_hands.Hands(static_image_mode=False, model_complexity=0,
-                        min_detection_confidence=0.5,
-                        min_tracking_confidence=0.5) as hands:
-        while True:
-            ret, image = video_stream.read()
-            if not ret:
-                break
-
-            results = hands.process(cv2.flip(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), 1))
-            image_height, image_width, _ = image.shape
-
-            if results.multi_hand_landmarks:
-                annotated_image = cv2.flip(image.copy(), 1)
-                for hand_landmarks in results.multi_hand_landmarks:
-                # Wrist Hand /  Pergelangan Tangan
-                    wristX = hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].x * image_width
-                    wristY = hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].y * image_height
-                    wristZ = hand_landmarks.landmark[mp_hands.HandLandmark.WRIST].z
-
-                    # Thumb Finger / Ibu Jari
-                    thumb_CmcX = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_CMC].x * image_width
-                    thumb_CmcY = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_CMC].y * image_height
-                    thumb_CmcZ = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_CMC].z
-
-                    thumb_McpX = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_MCP].x * image_width
-                    thumb_McpY = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_MCP].y * image_height
-                    thumb_McpZ = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_MCP].z
-
-                    thumb_IpX = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_IP].x * image_width
-                    thumb_IpY = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_IP].y * image_height
-                    thumb_IpZ = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_IP].z
-
-                    thumb_TipX = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].x * image_width
-                    thumb_TipY = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].y * image_height
-                    thumb_TipZ = hand_landmarks.landmark[mp_hands.HandLandmark.THUMB_TIP].z
-
-                    # Index Finger / Jari Telunjuk
-                    index_McpX = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP].x * image_width
-                    index_McpY = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP].y * image_height
-                    index_McpZ = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_MCP].z
-
-                    index_PipX = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_PIP].x * image_width
-                    index_PipY = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_PIP].y * image_height
-                    index_PipZ = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_PIP].z
-
-                    index_DipX = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_DIP].x * image_width
-                    index_DipY = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_DIP].y * image_height
-                    index_DipZ = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_DIP].z
-
-                    index_TipX = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x * image_width
-                    index_TipY = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y * image_height
-                    index_TipZ = hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].z
-
-                    # Middle Finger / Jari Tengah
-                    middle_McpX = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].x * image_width
-                    middle_McpY = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].y * image_height
-                    middle_McpZ = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_MCP].z
-
-                    middle_PipX = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_PIP].x * image_width
-                    middle_PipY = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_PIP].y * image_height
-                    middle_PipZ = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_PIP].z
-
-                    middle_DipX = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_DIP].x * image_width
-                    middle_DipY = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_DIP].y * image_height
-                    middle_DipZ = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_DIP].z
-
-                    middle_TipX = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].x * image_width
-                    middle_TipY = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].y * image_height
-                    middle_TipZ = hand_landmarks.landmark[mp_hands.HandLandmark.MIDDLE_FINGER_TIP].z
-
-                    # Ring Finger / Jari Cincin
-                    ring_McpX = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_MCP].x * image_width
-                    ring_McpY = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_MCP].y * image_height
-                    ring_McpZ = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_MCP].z
-
-                    ring_PipX = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_PIP].x * image_width
-                    ring_PipY = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_PIP].y * image_height
-                    ring_PipZ = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_PIP].z
-
-                    ring_DipX = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_DIP].x * image_width
-                    ring_DipY = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_DIP].y * image_height
-                    ring_DipZ = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_DIP].z
-
-                    ring_TipX = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP].x * image_width
-                    ring_TipY = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP].y * image_height
-                    ring_TipZ = hand_landmarks.landmark[mp_hands.HandLandmark.RING_FINGER_TIP].z
-
-                    # Pinky Finger / Jari Kelingking
-                    pinky_McpX = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_MCP].x * image_width
-                    pinky_McpY = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_MCP].y * image_height
-                    pinky_McpZ = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_MCP].z
-
-                    pinky_PipX = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_PIP].x * image_width
-                    pinky_PipY = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_PIP].y * image_height
-                    pinky_PipZ = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_PIP].z
-
-                    pinky_DipX = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_DIP].x * image_width
-                    pinky_DipY = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_DIP].y * image_height
-                    pinky_DipZ = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_DIP].z
-
-                    pinky_TipX = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].x * image_width
-                    pinky_TipY = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].y * image_height
-                    pinky_TipZ = hand_landmarks.landmark[mp_hands.HandLandmark.PINKY_TIP].z
-
-                    # Draw the Skeleton
-                    mp_drawing.draw_landmarks(
-                        annotated_image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
-
-                    # draw bounding box
-                    bounding_box = {}
-                    bounding_box['x_min'] = int(min(wristX, thumb_CmcX, thumb_IpX, thumb_TipX, index_McpX, index_PipX, index_DipX, index_TipX, middle_McpX,
-                                                middle_PipX, middle_DipX, middle_TipX, ring_McpX, ring_PipX, ring_DipX, ring_TipX, pinky_McpX, pinky_PipX, pinky_DipX, pinky_TipX))
-                    bounding_box['y_min'] = int(min(wristY, thumb_CmcY, thumb_IpY, thumb_TipY, index_McpY, index_PipY, index_DipY, index_TipY, middle_McpY,
-                                                middle_PipY, middle_DipY, middle_TipY, ring_McpY, ring_PipY, ring_DipY, ring_TipY, pinky_McpY, pinky_PipY, pinky_DipY, pinky_TipY))
-                    bounding_box['x_max'] = int(max(wristX, thumb_CmcX, thumb_IpX, thumb_TipX, index_McpX, index_PipX, index_DipX, index_TipX, middle_McpX,
-                                                middle_PipX, middle_DipX, middle_TipX, ring_McpX, ring_PipX, ring_DipX, ring_TipX, pinky_McpX, pinky_PipX, pinky_DipX, pinky_TipX))
-                    bounding_box['y_max'] = int(max(wristY, thumb_CmcY, thumb_IpY, thumb_TipY, index_McpY, index_PipY, index_DipY, index_TipY, middle_McpY,
-                                                middle_PipY, middle_DipY, middle_TipY, ring_McpY, ring_PipY, ring_DipY, ring_TipY, pinky_McpY, pinky_PipY, pinky_DipY, pinky_TipY))
-
-                    cv2.rectangle(annotated_image, (bounding_box['x_min'], bounding_box['y_min']), (
-                        bounding_box['x_max'], bounding_box['y_max']), (0, 255, 0), 2)
-                
-                yield annotated_image
-            else:
-                yield None
-
-
 @st.cache(ttl=24*60*60, allow_output_mutation=True)
 def load_model():
     num_classes = 26
@@ -220,112 +88,70 @@ def load_model():
     return model
 
 
-def predict(frame, model):
-    (wristX, wristY, wristZ,
-     thumb_CmcX, thumb_CmcY, thumb_CmcZ,
-     thumb_McpX, thumb_McpY, thumb_McpZ,
-     thumb_IpX, thumb_IpY, thumb_IpZ,
-     thumb_TipX, thumb_TipY, thumb_TipZ,
-     index_McpX, index_McpY, index_McpZ,
-     index_PipX, index_PipY, index_PipZ,
-     index_DipX, index_DipY, index_DipZ,
-     index_TipX, index_TipY, index_TipZ,
-     middle_McpX, middle_McpY, middle_McpZ,
-     middle_PipX, middle_PipY, middle_PipZ,
-     middle_DipX, middle_DipY, middle_DipZ,
-     middle_TipX, middle_TipY, middle_TipZ,
-     ring_McpX, ring_McpY, ring_McpZ,
-     ring_PipX, ring_PipY, ring_PipZ,
-     ring_DipX, ring_DipY, ring_DipZ,
-     ring_TipX, ring_TipY, ring_TipZ,
-     pinky_McpX, pinky_McpY, pinky_McpZ,
-     pinky_PipX, pinky_PipY, pinky_PipZ,
-     pinky_DipX, pinky_DipY, pinky_DipZ,
-     pinky_TipX, pinky_TipY, pinky_TipZ,
-     output_IMG) = extract_feature(frame)
+def extract_feature(annotated_image):
+    mp_hands = mp.solutions.hands
+    mp_drawing = mp.solutions.drawing_utils
 
-    input_IMG = np.array([[[wristX], [wristY], [wristZ],
-                           [thumb_CmcX], [thumb_CmcY], [thumb_CmcZ],
-                           [thumb_McpX], [thumb_McpY], [thumb_McpZ],
-                           [thumb_IpX], [thumb_IpY], [thumb_IpZ],
-                           [thumb_TipX], [thumb_TipY], [thumb_TipZ],
-                           [index_McpX], [index_McpY], [index_McpZ],
-                           [index_PipX], [index_PipY], [index_PipZ],
-                           [index_DipX], [index_DipY], [index_DipZ],
-                           [index_TipX], [index_TipY], [index_TipZ],
-                           [middle_McpX], [middle_McpY], [middle_McpZ],
-                           [middle_PipX], [middle_PipY], [middle_PipZ],
-                           [middle_DipX], [middle_DipY], [middle_DipZ],
-                           [middle_TipX], [middle_TipY], [middle_TipZ],
-                           [ring_McpX], [ring_McpY], [ring_McpZ],
-                           [ring_PipX], [ring_PipY], [ring_PipZ],
-                           [ring_DipX], [ring_DipY], [ring_DipZ],
-                           [ring_TipX], [ring_TipY], [ring_TipZ],
-                           [pinky_McpX], [pinky_McpY], [pinky_McpZ],
-                           [pinky_PipX], [pinky_PipY], [pinky_PipZ],
-                           [pinky_DipX], [pinky_DipY], [pinky_DipZ],
-                           [pinky_TipX], [pinky_TipY], [pinky_TipZ]]])
+    with mp_hands.Hands(static_image_mode=False, model_complexity=0,
+                        min_detection_confidence=0.5,
+                        min_tracking_confidence=0.5) as hands:
+        results = hands.process(cv2.flip(cv2.cvtColor(annotated_image, cv2.COLOR_BGR2RGB), 1))
+        image_height, image_width, _ = annotated_image.shape
+
+        if results.multi_hand_landmarks:
+            for hand_landmarks in results.multi_hand_landmarks:
+                # Extract hand landmarks
+                landmarks = []
+                for landmark in hand_landmarks.landmark:
+                    landmarks.append(landmark.x * image_width)
+                    landmarks.append(landmark.y * image_height)
+                    landmarks.append(landmark.z)
+
+                yield landmarks
+        else:
+            yield None
+
+
+def predict(annotated_image, model):
+    features = next(extract_feature(annotated_image))
+    if features is None:
+        return None, None, annotated_image
+
+    input_IMG = np.array([features])
 
     predictions = model.predict(input_IMG)
-    char = chr(np.argmax(predictions)+65)
-    confidence = np.max(predictions)/np.sum(predictions)
+    char = chr(np.argmax(predictions) + 65)
+    confidence = np.max(predictions) / np.sum(predictions)
 
     if confidence > 0.4:
-        cv2.putText(output_IMG, char, (50, 50),
+        cv2.putText(annotated_image, char, (50, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        cv2.putText(output_IMG, str(confidence), (50, 100),
+        cv2.putText(annotated_image, str(confidence), (50, 100),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        return char, confidence, output_IMG
+        return char, confidence, annotated_image
 
-    return None, None, output_IMG
-
-
-class Detection(NamedTuple):
-    name: str
-    prob: float
-
-
-class VideoTransformer(VideoProcessorBase):
-
-    result_queue: "queue.Queue[List[Detection]]"
-
-    def __init__(self) -> None:
-        self.threshold1 = 224
-        self.result_queue = queue.Queue()
-        self.data = np.ndarray(shape=(1, 240, 240, 3), dtype=np.float32)
-
-    def _predict_image(self, image):
-        result: List[Detection] = []
-        model = load_model()
-        label, confidence, output_img = predict(image, model)
-        if label is not None:
-            result.append(Detection(label, float(confidence)))
-        return result, output_img
-
-    def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
-        self.frame = frame
-        result, output_img = self._predict_image(
-            frame.to_ndarray(format="bgr24"))
-        self.result_queue.put(result)
-
-        return av.VideoFrame.from_ndarray(output_img, format="bgr24")
+    return None, None, annotated_image
 
 
 def process_video():
-    cap = cv2.VideoCapture(0)  # Use the webcam
+    cap = cv2.VideoCapture(0)
+    image_placeholder = st.empty()  # Create an empty placeholder for the image
+    model = load_model()
 
     while True:
         ret, frame = cap.read()
         if not ret:
             break
 
-        # Process each frame using extract_feature
-        for annotated_image in extract_feature(cap):
-            if annotated_image is not None:
-                # Display the annotated image in Streamlit
-                st.image(annotated_image, channels="BGR", use_column_width=True)
+        annotated_image = frame.copy()
+        # Process each frame directly in the predict function
+        _, _, output_IMG = predict(annotated_image, model)
+        annotated_image_bytes = cv2.imencode(".jpg", output_IMG)[1].tobytes()
+        # Update the image placeholder with the new image
+        image_placeholder.image(annotated_image_bytes, channels="BGR", use_column_width=True, caption="Video Feed")
 
     cap.release()
+
 
 
 def sign_detection(db, user_id):
@@ -452,7 +278,7 @@ def main():
     if st.session_state.key:
         user_id = st.session_state.key
 
-        db = firebase()
+        app, db = firebase()
         st.sidebar.title("Select the process to your convinience")
         st.sidebar.markdown("Select the conversion method accordingly:")
         algo = st.sidebar.selectbox(
@@ -483,6 +309,7 @@ def main():
                 st.experimental_rerun()
 
         elif algo == "Feedback analysis":
+            # analysis of feedback that is coming from the database, includes the feedback of all the users
             st.title("Feedback Analysis")
             st.set_option('deprecation.showPyplotGlobalUse', False)
 

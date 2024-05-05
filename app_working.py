@@ -280,39 +280,9 @@ def predict(frame, model):
     return None, None, output_IMG
 
 
-class Detection(NamedTuple):
-    name: str
-    prob: float
-
-
-class VideoTransformer(VideoProcessorBase):
-
-    result_queue: "queue.Queue[List[Detection]]"
-
-    def __init__(self) -> None:
-        self.threshold1 = 224
-        self.result_queue = queue.Queue()
-        self.data = np.ndarray(shape=(1, 240, 240, 3), dtype=np.float32)
-
-    def _predict_image(self, image):
-        result: List[Detection] = []
-        model = load_model()
-        label, confidence, output_img = predict(image, model)
-        if label is not None:
-            result.append(Detection(label, float(confidence)))
-        return result, output_img
-
-    def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
-        self.frame = frame
-        result, output_img = self._predict_image(
-            frame.to_ndarray(format="bgr24"))
-        self.result_queue.put(result)
-
-        return av.VideoFrame.from_ndarray(output_img, format="bgr24")
-
-
 def process_video():
-    cap = cv2.VideoCapture(0)  # Use the webcam
+    cap = cv2.VideoCapture(0)
+    image_placeholder = st.empty()  # Create an empty placeholder for the image
 
     while True:
         ret, frame = cap.read()
@@ -322,8 +292,10 @@ def process_video():
         # Process each frame using extract_feature
         for annotated_image in extract_feature(cap):
             if annotated_image is not None:
-                # Display the annotated image in Streamlit
-                st.image(annotated_image, channels="BGR", use_column_width=True)
+                # Convert the annotated image to bytes
+                annotated_image_bytes = cv2.imencode(".jpg", annotated_image)[1].tobytes()
+                # Update the image placeholder with the new image
+                image_placeholder.image(annotated_image_bytes, channels="BGR", use_column_width=True, caption="Video Feed")
 
     cap.release()
 

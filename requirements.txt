@@ -2,7 +2,6 @@ aiortc
 av
 typing_extensions
 streamlit
-streamlit_webrtc==0.47.6
 firebase-admin
 opencv_python
 pillow
@@ -16,3 +15,4 @@ textblob
 wordcloud
 plotly-express
 asyncio
+streamlit-camera-input-live
